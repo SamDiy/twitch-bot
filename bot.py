@@ -12,6 +12,20 @@ import socket
 
 chat_queue = queue.Queue()
 
+use_rules = { 'use_db': False, 'use_dialogflow': False }
+
+def get_db_use_setting(setting_name):
+    setting_value = get_setting_value(setting_name)
+    try:
+        return bool(int(setting_value))
+    except Exception:
+        return False
+
+def set_use_rule_from_db(setting_names):
+    global use_rules
+    for setting_name in setting_names:
+        use_rules[setting_name] = get_db_use_setting(setting_name)
+
 class myBot(commands.Bot):
   def stop(self):
     self._ws.teardown()
@@ -31,6 +45,7 @@ bot = myBot(
 
 @bot.event
 async def event_ready():
+  set_use_rule_from_db(['use_db', 'use_dialogflow'])  
   print(f"{get_setting_value('nick')} is online!")
   ws = bot._ws
   await ws.send_privmsg(get_setting_value('initial_channels', ',')[0], "/me has landed!")
