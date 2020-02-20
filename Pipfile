@@ -13,7 +13,6 @@ pygame = "*"
 apiai = "*"
 peewee = "*"
 pyqt5 = "*"
-tkinter = "*"
 
 [requires]
 python_version = "3.6"
